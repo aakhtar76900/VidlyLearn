@@ -1,0 +1,15 @@
+﻿@model Vidly.Models.Customer
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Welcome to Edit Page</h2>
+<p>Customer Name : @Model.Name</p>
+@if(Model.BirthDate !=null)
+{
+    <p>Birth Date : @Model.BirthDate.Value.ToString("dd/MM/yyyy")</p>
+}
+
+
+
+

@@ -1,0 +1,29 @@
+﻿@model Vidly.ViewModel.MoviesViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Movies</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Genere</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movies in Model.Movies)
+        {
+            <tr>
+             
+                <td>@Html.ActionLink(movies.Name, "Edit", "Movies", new {id=movies.Id} , null)</td>
+                <td>@movies.Genere.Name</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+
