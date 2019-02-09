@@ -70,9 +70,45 @@ namespace Vidly.Controllers
 
         public ActionResult Edit(int id)
         {
-            var movie = _context.Movies.Where(x => x.Id == id).Include(c=>c.Genere).SingleOrDefault();
-            return View(movie);
+            var viewModel = new MovieFormViewModel();
+            viewModel.Generes = _context.Generes.ToList();
+            viewModel.Movie = _context.Movies.Where(x => x.Id == id).Include(c=>c.Genere).SingleOrDefault();
+            return View("New",viewModel);
         }
+        
+        public ActionResult New()
+        {
+            var viewModel = new MovieFormViewModel();
+            viewModel.Generes = _context.Generes.ToList();
+            return View(viewModel);
+        }
+
+        public ActionResult Save(MovieFormViewModel viewModel)
+        {
+            if(viewModel.Movie.Id == 0)
+            {
+                _context.Movies.Add(viewModel.Movie);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var dataInDb = _context.Movies.Single(x => x.Id == viewModel.Movie.Id);
+                dataInDb.Name = viewModel.Movie.Name;
+                dataInDb.GenereId = viewModel.Movie.GenereId;
+                dataInDb.NumberInStock = viewModel.Movie.NumberInStock;
+                dataInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
+                _context.SaveChanges();
+                dataInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
+
+            }
+
+            return RedirectToAction("Index", "Movies");
+
+        }
+
+
+
+
 
     }
 }

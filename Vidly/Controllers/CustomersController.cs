@@ -35,9 +35,10 @@ namespace Vidly.Controllers
 
         public ActionResult Edit(int id)
         {
-
-            var customer = _context.Customers.Where(x => x.Id == id).SingleOrDefault();
-            return View(customer);
+            var viewModel = new CustomerFormViewModel();
+            viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+            viewModel.Customer = _context.Customers.Where(x => x.Id == id).SingleOrDefault();
+            return View("New" , viewModel);
         }
 
         public List<Customer> GetCustomers()
@@ -46,6 +47,36 @@ namespace Vidly.Controllers
             return customers;
 
         }
+
+        public  ActionResult New()
+        {
+            var viewModel = new CustomerFormViewModel();
+            viewModel.MembershipTypes = _context.MembershipTypes.ToList(); 
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Save(CustomerFormViewModel viewModel)
+        {
+            if(viewModel.Customer.Id==0)
+            {
+                _context.Customers.Add(viewModel.Customer);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var dataInDb = _context.Customers.SingleOrDefault(x => x.Id == viewModel.Customer.Id);
+                dataInDb.Name = viewModel.Customer.Name;
+                dataInDb.BirthDate = viewModel.Customer.BirthDate;
+                dataInDb.MembershipTypeId = viewModel.Customer.MembershipTypeId;
+                dataInDb.isSubscribedToNewsletter = viewModel.Customer.isSubscribedToNewsletter;
+                _context.SaveChanges();
+            }
+           
+            return RedirectToAction("Index", "Customers");
+
+        }
+
 
 
     }
