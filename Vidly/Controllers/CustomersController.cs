@@ -58,22 +58,31 @@ namespace Vidly.Controllers
         [HttpPost]
         public ActionResult Save(CustomerFormViewModel viewModel)
         {
-            if(viewModel.Customer.Id==0)
+            if (!ModelState.IsValid)
             {
-                _context.Customers.Add(viewModel.Customer);
-                _context.SaveChanges();
+                viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+                return View("New", viewModel);
             }
             else
             {
-                var dataInDb = _context.Customers.SingleOrDefault(x => x.Id == viewModel.Customer.Id);
-                dataInDb.Name = viewModel.Customer.Name;
-                dataInDb.BirthDate = viewModel.Customer.BirthDate;
-                dataInDb.MembershipTypeId = viewModel.Customer.MembershipTypeId;
-                dataInDb.isSubscribedToNewsletter = viewModel.Customer.isSubscribedToNewsletter;
-                _context.SaveChanges();
+                if (viewModel.Customer.Id == 0)
+                {
+                    _context.Customers.Add(viewModel.Customer);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    var dataInDb = _context.Customers.SingleOrDefault(x => x.Id == viewModel.Customer.Id);
+                    dataInDb.Name = viewModel.Customer.Name;
+                    dataInDb.BirthDate = viewModel.Customer.BirthDate;
+                    dataInDb.MembershipTypeId = viewModel.Customer.MembershipTypeId;
+                    dataInDb.isSubscribedToNewsletter = viewModel.Customer.isSubscribedToNewsletter;
+                    _context.SaveChanges();
+                }
+
+                return RedirectToAction("Index", "Customers");
             }
-           
-            return RedirectToAction("Index", "Customers");
+            
 
         }
 

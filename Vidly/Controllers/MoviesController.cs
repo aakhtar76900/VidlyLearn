@@ -85,24 +85,34 @@ namespace Vidly.Controllers
 
         public ActionResult Save(MovieFormViewModel viewModel)
         {
-            if(viewModel.Movie.Id == 0)
+            if(!ModelState.IsValid)
             {
-                _context.Movies.Add(viewModel.Movie);
-                _context.SaveChanges();
+                viewModel.Generes = _context.Generes.ToList();
+                return View("New", "Movies",viewModel);
             }
             else
             {
-                var dataInDb = _context.Movies.Single(x => x.Id == viewModel.Movie.Id);
-                dataInDb.Name = viewModel.Movie.Name;
-                dataInDb.GenereId = viewModel.Movie.GenereId;
-                dataInDb.NumberInStock = viewModel.Movie.NumberInStock;
-                dataInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
-                _context.SaveChanges();
-                dataInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
+                if (viewModel.Movie.Id == 0)
+                {
+                    _context.Movies.Add(viewModel.Movie);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    var dataInDb = _context.Movies.Single(x => x.Id == viewModel.Movie.Id);
+                    dataInDb.Name = viewModel.Movie.Name;
+                    dataInDb.GenereId = viewModel.Movie.GenereId;
+                    dataInDb.NumberInStock = viewModel.Movie.NumberInStock;
+                    dataInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
+                    _context.SaveChanges();
+                    dataInDb.ReleaseDate = viewModel.Movie.ReleaseDate;
 
+                }
+
+                return RedirectToAction("Index", "Movies");
             }
 
-            return RedirectToAction("Index", "Movies");
+            
 
         }
 
